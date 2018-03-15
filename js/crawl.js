@@ -1,46 +1,43 @@
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.cmd == "crawl") {
-		if (tryCrawlFromQuickBoard() == false &&
-			tryCrawlFromDetailPage() == false) {
+		if (tryCrawling() == false) {
 			alert("这里没有你要找的八阿哥。");
 		}
 	}
 });
 
-function _x(STR_XPATH) {
-	var xresult = document.evaluate(STR_XPATH, document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
-	return xresult.snapshotItem(0);
-}
-
-function tryCrawlFromQuickBoard() {
+function tryCrawling() {
 	// ID
-	var bugid_node = _x("/html[@class='webkit chrome']/body[@id='jira']/div[@id='page']/section[@id='content']/div[@class='aui-page-panel']/div[@class='aui-page-panel-inner']/div[@class='issue-navigator']/div[@class='content']/div[@class='issue-search']/div[@class='details-layout']/div/div[@class='aui-group split-view']/div[@class='aui-item detail-panel']/div[@*]/div[@id='issue-content']/header[@id='stalker']/div[@class='issue-header-content']/header[@class='aui-page-header']/div[@class='aui-page-header-inner']/div[@class='aui-page-header-main']/ol[@class='aui-nav aui-nav-breadcrumbs']/li[2]/a[@id='key-val']")
+	var bugid_node = document.querySelector("a#key-val.issue-link");
 	// Des
-	var bugdes_node = _x("/html[@class='webkit chrome']/body[@id='jira']/div[@id='page']/section[@id='content']/div[@class='aui-page-panel']/div[@class='aui-page-panel-inner']/div[@class='issue-navigator']/div[@class='content']/div[@class='issue-search']/div[@class='details-layout']/div/div[@class='aui-group split-view']/div[@class='aui-item detail-panel']/div[@*]/div[@id='issue-content']/header[@id='stalker']/div[@class='issue-header-content']/header[@class='aui-page-header']/div[@class='aui-page-header-inner']/div[@class='aui-page-header-main']/h1[@id='summary-val']");
-	return assembleBugInfo(bugid_node, bugdes_node, null);
+	var bugdes_node = document.querySelector("h1#summary-val");
+	return assembleBugInfo(bugid_node, bugdes_node);
 }
 
-function tryCrawlFromDetailPage() {
-	// ID
-	var bugid_node = _x("/html[@class='webkit chrome']/body[@id='jira']/div[@id='page']/section[@id='content']/div[@class='aui-page-panel']/div[@class='aui-page-panel-inner']/div[@class='issue-navigator']/div[@class='content']/div[@class='issue-view']/div[@class='issue-container']/div[@id='issue-content']/header[@id='stalker']/div[@class='issue-header-content']/header[@class='aui-page-header']/div[@class='aui-page-header-inner']/div[@class='aui-page-header-main']/ol[@class='aui-nav aui-nav-breadcrumbs']/li[2]/a[@id='key-val']")
-	// Des
-	var bugdes_node = _x("/html[@class='webkit chrome']/body[@id='jira']/div[@id='page']/section[@id='content']/div[@class='aui-page-panel']/div[@class='aui-page-panel-inner']/div[@class='issue-navigator']/div[@class='content']/div[@class='issue-view']/div[@class='issue-container']/div[@id='issue-content']/header[@id='stalker']/div[@class='issue-header-content']/header[@class='aui-page-header']/div[@class='aui-page-header-inner']/div[@class='aui-page-header-main']/h1[@id='summary-val']");
-	return assembleBugInfo(bugid_node, bugdes_node, window.location.href);
-}
-
-function assembleBugInfo(bid_node, bdes_node, burl) {
+function assembleBugInfo(bid_node, bdes_node) {
 	if (bid_node && bdes_node) {
-		if (burl == null) {
-			burl = window.location.protocol + "//" + window.location.host + bid_node.getAttribute("href");
-		}
+		var burl = window.location.protocol + "//" + window.location.host + bid_node.getAttribute("href");
 		var text = "【Bugfix-" + bid_node.innerText + "】" + bdes_node.innerText + "\n\n" +
 			"【URL】：" + burl + "\n" +
 			"【产生原因】：" + "\n" +
 			"【解决方案】：" + "\n" +
 			"【影响范围】：该Bug本身";
-		alert(text);
+		copyTextToClipboard(text);
 		return true;
 	} else {
 		return false;
 	}
+}
+
+function copyTextToClipboard(text) {
+	var copyFrom = document.createElement("textarea");
+	copyFrom.textContent = text;
+	var body = document.getElementsByTagName('body')[0];
+	body.appendChild(copyFrom);
+	copyFrom.select();
+	document.execCommand('copy');
+	body.removeChild(copyFrom);
+
+	alert("已复制，赶紧去提交，还有千万个Bug在等着你！\n" +
+		"(不相信的话自己再复制一遍也行)\n\n" + text);
 }

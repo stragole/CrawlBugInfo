@@ -12,6 +12,7 @@
   },
 
   "permissions": [
+    "clipboardWrite",
     "contextMenus",
     "http://jira.meitu.com/*"
   ],
