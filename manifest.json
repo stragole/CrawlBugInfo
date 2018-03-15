@@ -1,0 +1,29 @@
+{
+  "manifest_version": 2,
+
+  "name": "GoFixing",
+  "description": "又到了激动人心的解 Bug 时间~",
+  "version": "1.0",
+
+  "icons": {
+    "16": "img/icon.png",
+    "48": "img/icon.png",
+    "128": "img/icon.png"
+  },
+
+  "permissions": [
+    "clipboardWrite",
+    "contextMenus",
+    "http://jira.meitu.com/*"
+  ],
+
+  "content_scripts": [{
+    "matches": ["http://jira.meitu.com/*"],
+    "js": ["js/crawl.js"],
+    "run_at": "document_start"
+  }],
+
+  "background": {
+    "scripts": ["js/background.js"]
+  }
+}
