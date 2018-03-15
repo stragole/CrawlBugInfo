@@ -38,6 +38,13 @@ function copyTextToClipboard(text) {
 	document.execCommand('copy');
 	body.removeChild(copyFrom);
 
-	alert("已复制，赶紧去提交，还有千万个Bug在等着你！\n" +
-		"(不相信的话自己再复制一遍也行)\n\n" + text);
+	chrome.storage.local.get({
+		silence: false
+	}, function(items) {
+		if (!items.silence) {
+			alert("已复制，赶紧去提交，还有千万个Bug在等着你！\n" +
+				"(不相信的话自己再复制一遍也行)\n\n" + text);
+		}
+	});
+
 }
