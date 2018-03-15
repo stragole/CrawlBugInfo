@@ -12,6 +12,7 @@
   },
 
   "permissions": [
+    "storage",
     "clipboardWrite",
     "contextMenus",
     "http://jira.meitu.com/*"
@@ -25,5 +26,12 @@
 
   "background": {
     "scripts": ["js/background.js"]
+  },
+
+  "options_ui": {
+    // Required.
+    "page": "html/options.html",
+    // Recommended.
+    "chrome_style": true
   }
 }
