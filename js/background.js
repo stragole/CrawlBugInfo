@@ -9,6 +9,17 @@ chrome.contextMenus.create({
 	}
 });
 
+chrome.contextMenus.create({
+	title: "我只要 BugID",
+	contexts: ['page'],
+	documentUrlPatterns: ['http://jira.meitu.com/*'],
+	onclick: function() {
+		sendMessageToContentScript({
+			cmd: 'bug_id',
+		}, function(response) {});
+	}
+});
+
 function sendMessageToContentScript(message, callback) {
 	chrome.tabs.query({
 		active: true,
