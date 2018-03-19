@@ -27,7 +27,7 @@ function justBugID() {
 	if (bugid_node) {
 		var text = bugid_node.innerText;
 		copyTextToClipboard(text);
-		notifyIfNeeded(function(){
+		notifyIfNeeded(function() {
 			alert("已复制「" + text + "」");
 		});
 		return true;
@@ -48,16 +48,16 @@ function tryCrawling() {
 
 function assembleBugInfo(bid_node, bdes_node) {
 	if (bid_node && bdes_node) {
-		var burl = window.location.protocol + "//" + window.location.host + bid_node.getAttribute("href");
+		// var burl = window.location.protocol + "//" + window.location.host + bid_node.getAttribute("href");
 		var text = "【Bugfix-" + bid_node.innerText + "】" + bdes_node.innerText + "\n\n" +
-			"【URL】：" + burl + "\n" +
+			// "【URL】：" + burl + "\n" +
 			"【产生原因】：" + "\n" +
 			"【解决方案】：" + "\n" +
 			"【影响范围】：该Bug本身";
 		copyTextToClipboard(text);
-		notifyIfNeeded(function(){
+		notifyIfNeeded(function() {
 			alert("已复制，赶紧去提交，还有千万个Bug在等着你！\n" +
-			"(不相信的话自己再复制一遍也行)\n\n" + text);
+				"(不相信的话自己再复制一遍也行)\n\n" + text);
 		});
 		return true;
 	} else {
@@ -78,7 +78,7 @@ function copyTextToClipboard(text) {
 
 // 按需通知
 function notifyIfNeeded(alertt) {
-		chrome.storage.local.get({
+	chrome.storage.local.get({
 		silence: false
 	}, function(items) {
 		if (!items.silence) {
